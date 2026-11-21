@@ -4,21 +4,28 @@ import { party } from "@/data/party";
 import { Plane } from "./Hero";
 import { Icon } from "./Icon";
 import { PolicyGrid } from "./PolicyGrid";
-import { Roster } from "./Roster";
+import { Countdown } from "./motion/Countdown";
+import { TeamReel } from "./TeamReel";
 import { SplitHeading } from "./Text";
 
 const d = (v: string) => ({ "--d": v }) as CSSProperties;
 
 export function TeamHead() {
   return (
-    <header className="team__head container">
-      <p className="kicker" data-reveal><span className="kicker__line" aria-hidden="true" />{party.teamSection.kicker}</p>
-      <div className="team__head-grid">
-        <SplitHeading className="team__title" id="team-title" text={party.teamSection.title} />
-        <p className="team__lead" data-reveal style={d(".2s")}>{party.teamSection.lead}</p>
-      </div>
-      <Roster />
-    </header>
+    <>
+      <header className="team__head container">
+        <div className="team__deco" aria-hidden="true">
+          <span className="spark spark--3" data-parallax="-0.35">✦</span>
+          <span className="deco-ring deco-ring--3" data-parallax="0.15" />
+        </div>
+        <p className="kicker" data-reveal><span className="kicker__line" aria-hidden="true" />{party.teamSection.kicker}</p>
+        <div className="team__head-grid">
+          <SplitHeading className="team__title" id="team-title" text={party.teamSection.title} />
+          <p className="team__lead" data-reveal style={d(".2s")}>{party.teamSection.lead}</p>
+        </div>
+      </header>
+      <TeamReel />
+    </>
   );
 }
 
@@ -28,6 +35,8 @@ export function Policies() {
       <div className="policies__deco" aria-hidden="true">
         <span className="deco-ring deco-ring--2" data-parallax="0.12" />
         <span className="deco-circle deco-circle--2" data-parallax="-0.1" />
+        <span className="spark spark--4" data-parallax="-0.3">✦</span>
+        <span className="deco-blob deco-blob--2" data-parallax="0.2" />
       </div>
       <div className="container">
         <p className="kicker" data-reveal><span className="kicker__line" aria-hidden="true" />{party.policySection.kicker}</p>
@@ -71,13 +80,18 @@ export function Closing({ ctaBase = "" }: { ctaBase?: string }) {
         <Image className="cloud cloud--e" src={cloudB} alt="" width={900} height={360} sizes="60vw" data-parallax="-0.15" />
         <Image className="cloud cloud--f" src={cloudB} alt="" width={900} height={360} sizes="70vw" data-parallax="0.1" />
         <Plane className="plane--closing" parallax="-0.4" />
+        <span className="closing__rays" />
+        <span className="closing__ballot">{party.ballotNumber}</span>
       </div>
       <div className="container closing__inner">
         <p className="kicker kicker--center" data-reveal><span className="kicker__line" aria-hidden="true" />{party.closing.kicker}</p>
         <SplitHeading className="closing__title" id="closing-title" text={party.closing.headline} />
         <p className="closing__text" data-reveal style={d(".3s")}>{party.closing.text}</p>
         <div className="closing__cta" data-reveal style={d(".45s")}>
-          <a className="btn btn--primary btn--xl" href={cta}>
+          {party.electionDateISO && (
+            <Countdown dateISO={party.electionDateISO} label={party.closing.countdownLabel} doneText={party.closing.countdownDone} />
+          )}
+          <a className="btn btn--primary btn--xl" href={cta} data-magnetic="0.3" data-confetti data-cursor="Vote!">
             <span>{party.closing.ctaLabel}</span>
             <span className="btn__badge">No. {party.ballotNumber}</span>
           </a>

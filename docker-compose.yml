@@ -27,8 +27,8 @@ services:
       - "${APP_PORT:-3080}:3000"
     environment:
       NODE_ENV: production
-    volumes:
-      - image-cache:/app/.next/cache
+    # Optimised-image cache lives inside the container, so it is
+    # cleared on every rebuild (replaced photos show up immediately).
     security_opt:
       - no-new-privileges:true
     logging:
@@ -55,6 +55,5 @@ services:
       - caddy-config:/config
 
 volumes:
-  image-cache:
   caddy-data:
   caddy-config:

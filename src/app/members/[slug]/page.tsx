@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { Icon } from "@/components/Icon";
 import { JsonLd } from "@/components/JsonLd";
 import { MemberSection } from "@/components/MemberSection";
+import { Cinematics } from "@/components/motion/Cinematics";
 import { MotionEngine } from "@/components/MotionEngine";
 import { Closing, Footer } from "@/components/Sections";
 import { party } from "@/data/party";
@@ -101,6 +102,7 @@ export default async function MemberPage({ params }: Props) {
       </main>
       <Footer />
       <MotionEngine />
+      <Cinematics />
       <JsonLd data={memberJsonLd(member)} />
     </>
   );

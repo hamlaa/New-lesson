@@ -75,7 +75,7 @@ export const party = {
   },
 
   /* ---------- Images (files live in /public/images) ---------- */
-  logo: "/images/party-logo.png",
+  logo: "/images/new-lesson-logo.png",
   heroImage: "/images/hero-background.jpg",
   heroForeground: "/images/hero-island.png",
   cloudImages: ["/images/cloud-01.png", "/images/cloud-02.png"],
@@ -112,6 +112,17 @@ export const party = {
     mission:
       "Listen first. Act with transparency. Turn student ideas into real projects, and report back on every promise we make.",
     sloganMarquee: "A New Chapter ✦ A Better School ✦ The Future Starts With Us ✦",
+  },
+
+  /* ---------- Pledge (big pinned typography between About and Team) ----------
+     Each line slides in while you scroll. Use *asterisks* for the serif accent. */
+  pledge: {
+    kicker: "The council pledge",
+    lines: [
+      { text: "Listen *first.*", thai: "ฟังเสียงนักเรียนก่อนเสมอ" },
+      { text: "Act *openly.*", thai: "ลงมือทำอย่างโปร่งใส" },
+      { text: "Report *back.*", thai: "รายงานผลทุกคำสัญญา" },
+    ],
   },
 
   /* ---------- Section headings ---------- */
@@ -266,6 +277,9 @@ export const party = {
     text: "On election day, turn the page with us. Vote NEW LESSON and write the next chapter of Ko Samui School together.",
     ctaLabel: "Vote NEW LESSON",
     ctaLink: "#policies",
+    /** Countdown to party.electionDateISO (shown above the button). */
+    countdownLabel: "Until election day",
+    countdownDone: "Election day is here — go vote!",
   },
 
   footerNote: "A student council campaign website. Made by students, for students.",

@@ -5,7 +5,9 @@ import { Intro } from "@/components/Intro";
 import { JsonLd } from "@/components/JsonLd";
 import { MemberHud } from "@/components/MemberHud";
 import { MemberSection } from "@/components/MemberSection";
+import { Cinematics } from "@/components/motion/Cinematics";
 import { MotionEngine } from "@/components/MotionEngine";
+import { Pledge } from "@/components/Pledge";
 import { Closing, Footer, Policies, TeamHead } from "@/components/Sections";
 import { party } from "@/data/party";
 import { homeJsonLd } from "@/lib/jsonld";
@@ -24,6 +26,7 @@ export default function HomePage() {
       <main id="main">
         <Hero />
         <Intro />
+        <Pledge />
         <section className="team" id="team" aria-labelledby="team-title">
           <TeamHead />
           <div className="members">
@@ -38,12 +41,9 @@ export default function HomePage() {
       <MemberHud
         items={party.members.map((m, i) => ({ anchor: memberAnchor(i), name: m.name, label: m.nickname || m.name }))}
       />
-      <div className="roster-preview" id="roster-preview" aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="" />
-      </div>
       <Footer />
       <MotionEngine />
+      <Cinematics />
       <JsonLd data={homeJsonLd()} />
     </>
   );

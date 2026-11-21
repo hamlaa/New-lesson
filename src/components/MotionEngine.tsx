@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { whenLoaded } from "@/lib/motion";
 
 /**
  * Scroll & pointer effects for server-rendered markup. Renders nothing.
@@ -12,7 +13,6 @@ import { useEffect } from "react";
  *   data-scrub              words light up while scrolling
  *   data-count              count up from 0 when visible
  *   .member                 gets .is-in when 20% visible
- *   a[data-preview]         floating photo preview (desktop roster)
  *
  * Parallax uses the CSS `translate` property so it never fights with
  * transform-based animations, and reads no layout while scrolling.
@@ -44,8 +44,6 @@ export function MotionEngine() {
       { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
     );
     const reveals = $$<HTMLElement>("[data-reveal]");
-    if (reduce) reveals.forEach((el) => el.classList.add("is-in"));
-    else reveals.forEach((el) => revealIO.observe(el));
     cleanups.push(() => revealIO.disconnect());
 
     /* ---------- Members ---------- */
@@ -55,8 +53,15 @@ export function MotionEngine() {
       }),
       { threshold: 0.2 },
     );
-    $$(".member").forEach((m) => (reduce ? m.classList.add("is-in") : memberIO.observe(m)));
     cleanups.push(() => memberIO.disconnect());
+
+    // Reveals start once the intro loader has lifted
+    const startReveals = () => {
+      if (reduce) reveals.forEach((el) => el.classList.add("is-in"));
+      else reveals.forEach((el) => revealIO.observe(el));
+      $$(".member").forEach((m) => (reduce ? m.classList.add("is-in") : memberIO.observe(m)));
+    };
+    cleanups.push(whenLoaded(startReveals));
 
     /* ---------- Counters ---------- */
     if (!reduce) {
@@ -185,46 +190,6 @@ export function MotionEngine() {
       cleanups.push(() => { hero.removeEventListener("pointermove", move); hero.removeEventListener("pointerleave", leave); });
     }
     measure();
-
-    /* ---------- Roster hover preview ---------- */
-    const box = document.getElementById("roster-preview");
-    const roster = document.getElementById("roster");
-    if (box && roster && fine && !reduce) {
-      const img = box.querySelector("img")!;
-      let x = 0, y = 0, tx = 0, ty = 0, raf = 0, on = false;
-      const loop = () => {
-        x += (tx - x) * 0.16;
-        y += (ty - y) * 0.16;
-        box.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${((tx - x) * 0.04).toFixed(2)}deg)`;
-        raf = on || Math.abs(tx - x) > 0.5 ? requestAnimationFrame(loop) : 0;
-      };
-      const move = (e: PointerEvent) => {
-        tx = e.clientX + 24;
-        ty = e.clientY - 130;
-        if (!raf) raf = requestAnimationFrame(loop);
-      };
-      const over = (e: PointerEvent) => {
-        const a = (e.target as HTMLElement).closest<HTMLAnchorElement>("a[data-preview]");
-        if (!a) return;
-        const src = a.dataset.preview;
-        const missing = document.querySelector(`${a.getAttribute("href")} .member__frame.is-missing`);
-        if (!src || missing) { box.classList.remove("is-visible"); return; }
-        if (img.getAttribute("src") !== src) img.src = src;
-        if (!on) { x = tx = e.clientX + 24; y = ty = e.clientY - 130; }
-        on = true;
-        box.classList.add("is-visible");
-      };
-      const leave = () => { on = false; box.classList.remove("is-visible"); };
-      roster.addEventListener("pointermove", move);
-      roster.addEventListener("pointerover", over);
-      roster.addEventListener("pointerleave", leave);
-      cleanups.push(() => {
-        roster.removeEventListener("pointermove", move);
-        roster.removeEventListener("pointerover", over);
-        roster.removeEventListener("pointerleave", leave);
-        cancelAnimationFrame(raf);
-      });
-    }
 
     root.classList.add("ready");
     return () => {

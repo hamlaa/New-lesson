@@ -4,9 +4,15 @@ import type { CSSProperties, ReactNode } from "react";
 import { party } from "@/data/party";
 import { baseOpenGraph } from "@/lib/metadata";
 import { GOOGLE_VERIFICATION, NOINDEX, SITE_URL } from "@/lib/site";
+import "lenis/dist/lenis.css";
 import "@/styles/style.css";
 import "@/styles/responsive.css";
 import "@/styles/pages.css";
+import "@/styles/motion.css";
+import { Loader } from "@/components/motion/Loader";
+import { PageTransition } from "@/components/motion/PageTransition";
+import { Pointer } from "@/components/motion/Pointer";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
 
 /* Self-hosted fonts: preloaded, no layout shift, no Google Fonts request */
 const display = localFont({
@@ -73,8 +79,9 @@ const themeVars = {
   "--c-accent": party.theme.accent,
 } as CSSProperties;
 
-/* Enables reveal animations only when JS runs; failsafe shows everything after 3 s */
-const bootScript = `document.documentElement.classList.add('js');setTimeout(function(){var r=document.documentElement;if(!r.classList.contains('ready'))r.classList.add('reveal-all')},3000);`;
+/* Enables animations only when JS runs. Holds the page behind the intro loader
+   (unless reduced motion is on). Failsafes: show everything if JS never starts. */
+const bootScript = `(function(){var r=document.documentElement;r.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)r.classList.add('is-loading');setTimeout(function(){if(!r.classList.contains('ready')){r.classList.add('reveal-all');r.classList.remove('is-loading')}},3000);setTimeout(function(){r.classList.remove('is-loading')},7000)})();`;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -91,7 +98,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <a className="skip-link" href="#main">Skip to content</a>
         <div className="scroll-progress" aria-hidden="true"><span /></div>
+        <SmoothScroll />
+        <Loader />
         {children}
+        <PageTransition />
+        <Pointer />
       </body>
     </html>
   );

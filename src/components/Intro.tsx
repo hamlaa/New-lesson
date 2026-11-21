@@ -34,6 +34,9 @@ export function Intro() {
           <path d="M4 40c20-30 40-30 60 0s40 30 60 0 40-30 72-6" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
         </svg>
         <Plane className="plane--intro" parallax="-0.3" fill="#69BDF5" fold="#4fa6e3" />
+        <span className="spark spark--1" data-parallax="-0.4">✦</span>
+        <span className="spark spark--2" data-parallax="0.25">✦</span>
+        <span className="deco-blob deco-blob--1" data-parallax="-0.22" />
       </div>
 
       <div className="container">
@@ -46,7 +49,7 @@ export function Intro() {
             <p className="intro__thai" lang="th" data-reveal>{party.intro.statementThai}</p>
           </div>
 
-          <aside className="party-card" data-reveal="right" aria-label="Party card">
+          <aside className="party-card" data-reveal="right" data-tilt="8" aria-label="Party card">
             <div className="party-card__top">
               <Image className="party-card__logo" src={party.logo} alt={`${party.partyName} party logo`} width={88} height={88} />
               <div>
@@ -65,7 +68,7 @@ export function Intro() {
 
         <div className="pillars">
           {pillars.map((p, i) => (
-            <article key={p.num} className={`pillar${i === 1 ? " pillar--offset" : ""}`} data-reveal style={d(`${i * 0.12}s`)}>
+            <article key={p.num} className={`pillar${i === 1 ? " pillar--offset" : ""}`}>
               <span className="pillar__num" aria-hidden="true">{p.num}</span>
               <h3 className="pillar__title">{p.title}</h3>
               <p className="pillar__text">{p.text}</p>

@@ -10,7 +10,7 @@ export function MemberPhoto({ src, name, nickname, eager = false }: {
 }) {
   const [failed, setFailed] = useState(!src);
   return (
-    <div className={`member__frame${failed ? " is-missing" : ""}`}>
+    <div className={`member__frame${failed ? " is-missing" : ""}`} data-tilt="7">
       {failed ? (
         <div className="member__missing" role="img" aria-label={`Photo of ${name} coming soon`}>
           <strong>{initials(name)}</strong>

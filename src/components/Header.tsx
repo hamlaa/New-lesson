@@ -108,7 +108,7 @@ export function Header({ onHome = true }: { onHome?: boolean }) {
               </li>
             ))}
             <li>
-              <a className={`nav__link nav__link--cta${active === "vote" ? " is-active" : ""}`} href={href("vote")}>
+              <a className={`nav__link nav__link--cta${active === "vote" ? " is-active" : ""}`} href={href("vote")} data-magnetic="0.25">
                 Vote <span>{party.partyName}</span>
               </a>
             </li>

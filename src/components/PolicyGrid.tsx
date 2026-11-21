@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import type { Policy } from "@/data/party";
 import { pad } from "@/lib/site";
 import { Icon } from "./Icon";
@@ -18,6 +18,11 @@ export function PolicyGrid({ policies }: { policies: Policy[] }) {
     if (firstRun.current) { firstRun.current = false; return; }
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const cards = Array.from(gridRef.current?.querySelectorAll<HTMLElement>(".policy-card:not([hidden])") ?? []);
+    gridRef.current?.querySelectorAll<HTMLElement>(".policy-card").forEach((card) => {
+      card.style.removeProperty("opacity");
+      card.style.removeProperty("transform");
+      card.style.removeProperty("visibility");
+    });
     cards.forEach((card, k) => {
       card.classList.remove("is-entering");
       void card.offsetWidth;
@@ -65,8 +70,7 @@ export function PolicyGrid({ policies }: { policies: Policy[] }) {
               key={p.title}
               className={`policy-card${offset ? " is-offset" : ""}`}
               hidden={!visible}
-              data-reveal
-              style={{ "--d": `${(i % 3) * 0.1}s` } as CSSProperties}
+              data-tilt="9"
             >
               <div className="policy-card__top">
                 <span className="policy-card__cat">{p.category}</span>

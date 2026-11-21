@@ -7,6 +7,16 @@ import { MemberPhoto } from "./MemberPhoto";
 
 const s = (n: number) => ({ "--s": n }) as CSSProperties;
 
+/** Splits a word into letters for the 3D letter animation (text stays readable in the HTML). */
+const chars = (text: string) =>
+  text.split(/(\s+)/).filter(Boolean).map((word, w) =>
+    /^\s+$/.test(word) ? " " : (
+      <span className="word" key={w}>
+        {word.split("").map((c, i) => <span className="ch" key={i}>{c}</span>)}
+      </span>
+    ),
+  );
+
 /** One full-screen member section. Used on the home page and on /members/[slug]. */
 export function MemberSection({
   member: m,
@@ -58,9 +68,9 @@ export function MemberSection({
               <span className="member__lesson">Lesson {m.number}</span>
               <span className="member__position">{m.position}</span>
             </p>
-            <Heading className="member__name" id={`${id}-name`} data-stagger style={s(1)}>
-              <span className="first">{first}</span>
-              {last ? <> <span className="last">{last}</span></> : null}
+            <Heading className="member__name" id={`${id}-name`} aria-label={m.name} data-stagger style={s(1)}>
+              <span className="first">{chars(first)}</span>
+              {last ? <> <span className="last">{chars(last)}</span></> : null}
             </Heading>
             {(m.nameThai || m.positionThai) && (
               <p className="member__thai" lang="th" data-stagger style={s(2)}>
@@ -97,6 +107,7 @@ export function MemberSection({
           </div>
         </div>
       </div>
+      <span className="member__shade" aria-hidden="true" />
     </article>
   );
 }
