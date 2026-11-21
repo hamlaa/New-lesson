@@ -1,0 +1,75 @@
+/* =====================================================================
+   pages.css — extra pieces for the Next.js version:
+   Thai sub-texts, profile links, member profile pages, 404 page.
+   ===================================================================== */
+
+/* Thai lines (also important keywords for Google Thailand) */
+.hero__subtitle-th { display: block; margin-top: .2rem; font-size: .82em; font-weight: 400; }
+.intro__thai {
+  margin-top: 1.5rem; max-width: 52ch;
+  padding-left: 1rem; border-left: 3px solid var(--c-primary);
+  font-size: 1.05rem; line-height: 1.75; color: var(--c-text-soft);
+}
+.closing__party span { font-weight: 600; font-size: .85em; color: var(--c-text-soft); }
+
+/* "Full profile →" link inside each member section */
+.member__more {
+  display: inline-flex; align-items: center; gap: .5rem;
+  margin-top: 1.25rem; padding: .6rem 1.1rem;
+  border-radius: 999px; border: 1px solid var(--c-line); background: #fff;
+  font-size: .9rem; font-weight: 600;
+  transition: background-color .3s, color .3s, border-color .3s, gap .4s var(--ease-out);
+}
+.member__more svg { width: 18px; height: 18px; }
+.member__more:hover { background: var(--c-text); border-color: var(--c-text); color: #fff; gap: .85rem; }
+
+/* ---------- Member profile page ---------- */
+.crumbs { padding: calc(var(--header-h) + 1rem) 0 0; position: relative; z-index: 2; }
+.crumbs ol { display: flex; flex-wrap: wrap; gap: .4rem; font-size: .85rem; color: var(--c-text-soft); }
+.crumbs li + li::before { content: "/"; margin-right: .4rem; color: var(--c-primary); }
+.crumbs a { font-weight: 600; color: var(--c-text); }
+.crumbs a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.crumbs + .member { padding-top: 2rem; min-height: calc(100svh - var(--header-h) - 2rem); }
+
+.others { padding: clamp(5rem, 10vw, 8rem) 0; background: linear-gradient(180deg, #fff, var(--c-accent)); }
+.others__title { font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 700; letter-spacing: -.04em; line-height: 1; }
+.others__grid {
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+.other-card { display: flex; flex-direction: column; gap: .2rem; }
+.other-card__photo {
+  position: relative; display: block; overflow: hidden;
+  aspect-ratio: 4 / 5; margin-bottom: .75rem;
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, var(--c-secondary), var(--c-accent));
+}
+.other-card__photo img { object-fit: cover; transition: scale .8s var(--ease-out); }
+.other-card:hover .other-card__photo img { scale: 1.06; }
+.other-card__num {
+  position: absolute; left: .75rem; bottom: .75rem;
+  padding: .25rem .6rem; border-radius: 999px;
+  background: var(--c-text); color: #fff; font-size: .8rem; font-weight: 700;
+}
+.other-card__name { font-size: 1.15rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.2; }
+.other-card__thai { font-size: .9rem; color: var(--c-text-soft); }
+.other-card__pos { font-size: .8rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--c-ink); }
+.others__back { margin-top: 3rem; }
+.others__back svg { width: 18px; height: 18px; }
+
+@media (min-width: 640px) { .others__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } }
+@media (min-width: 1024px) { .others__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+/* ---------- 404 ---------- */
+.not-found {
+  min-height: 80svh; display: flex; align-items: center;
+  padding: calc(var(--header-h) + 3rem) 0 4rem;
+  background: linear-gradient(180deg, var(--c-accent), #fff);
+}
+.not-found__code {
+  font-size: clamp(7rem, 30vw, 16rem); font-weight: 800; line-height: .8; letter-spacing: -.06em;
+  color: transparent; -webkit-text-stroke: 2px var(--c-primary);
+}
+.not-found__title { margin-top: 1rem; font-size: clamp(2rem, 6vw, 4rem); font-weight: 700; letter-spacing: -.04em; line-height: 1; max-width: 16ch; }
+.not-found__text { margin: 1.25rem 0 2rem; color: var(--c-text-soft); }

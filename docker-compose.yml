@@ -1,0 +1,60 @@
+# ─────────────────────────────────────────────────────────────────────
+#  NEW LESSON — docker compose
+#
+#  Local / server (HTTP on port 3080):
+#      docker compose up -d --build
+#
+#  Public server with automatic HTTPS (Let's Encrypt via Caddy):
+#      1. Point your domain's DNS (A record) to this server
+#      2. Set DOMAIN and NEXT_PUBLIC_SITE_URL=https://<domain> in .env
+#      3. docker compose --profile https up -d --build
+#
+#  Settings come from .env (copy .env.example → .env).
+# ─────────────────────────────────────────────────────────────────────
+name: new-lesson
+
+services:
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3080}
+        NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: ${NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION:-}
+        NEXT_PUBLIC_NOINDEX: ${NEXT_PUBLIC_NOINDEX:-false}
+    image: new-lesson-web:latest
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3080}:3000"
+    environment:
+      NODE_ENV: production
+    volumes:
+      - image-cache:/app/.next/cache
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  # Optional HTTPS reverse proxy — only starts with: --profile https
+  caddy:
+    image: caddy:2-alpine
+    profiles: ["https"]
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  image-cache:
+  caddy-data:
+  caddy-config:

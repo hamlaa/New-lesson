@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>NEW LESSON — Student Council Party · Ko Samui School</title>
+  <meta name="description" content="NEW LESSON is a student council party at Ko Samui School (โรงเรียนเกาะสมุย), Thailand. Meet our team, read our policies, and help write a new chapter for our school.">
+  <meta name="theme-color" content="#69BDF5">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/images/party-logo.png">
+
+  <!-- Social sharing preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="NEW LESSON — A New Lesson Begins.">
+  <meta property="og:description" content="A New Chapter. A Better School. Student council party of Ko Samui School.">
+  <meta property="og:image" content="assets/images/hero-background.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/images/hero-background.jpg" as="image">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <script>
+    /* Enables reveal animations only when JavaScript runs; failsafe shows everything. */
+    document.documentElement.classList.add('js');
+    setTimeout(function () {
+      if (!document.documentElement.classList.contains('ready')) document.documentElement.classList.add('reveal-all');
+    }, 3000);
+  </script>
+  <script src="js/icons.js" defer></script>
+  <script src="js/data.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <!-- ============ HEADER / NAVIGATION ============ -->
+  <header class="site-header" id="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="#top" aria-label="NEW LESSON — back to top">
+        <img class="brand__logo" src="assets/images/party-logo.png" data-bind-src="logo" alt="" width="40" height="40">
+        <span class="brand__name" data-bind="partyName">NEW LESSON</span>
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
+          <span class="nav__toggle-label">Menu</span>
+          <span class="nav__toggle-icon" aria-hidden="true"><span></span><span></span></span>
+        </button>
+        <ul class="nav__menu" id="nav-menu">
+          <li><a class="nav__link" href="#about"><span class="nav__num">01</span> About</a></li>
+          <li><a class="nav__link" href="#team"><span class="nav__num">02</span> Team</a></li>
+          <li><a class="nav__link" href="#policies"><span class="nav__num">03</span> Policies</a></li>
+          <li><a class="nav__link nav__link--cta" href="#vote">Vote <span data-bind="partyName">NEW LESSON</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============ 1. HERO ============ -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero__scene" aria-hidden="true">
+        <img class="hero__sky" src="assets/images/hero-background.jpg" data-bind-src="heroImage" alt="" data-parallax="0.45" data-mouse="8" fetchpriority="high" decoding="async">
+        <img class="cloud cloud--a" data-cloud="0" src="assets/images/cloud-01.png" alt="" data-parallax="0.3" data-mouse="18" decoding="async">
+        <img class="cloud cloud--b" data-cloud="1" src="assets/images/cloud-02.png" alt="" data-parallax="0.22" data-mouse="26" decoding="async">
+        <div class="hero__wordmark" data-parallax="0.28" data-mouse="12">
+          <span data-wordmark>NEW LESSON</span>
+        </div>
+        <img class="hero__island" src="assets/images/hero-island.png" data-bind-src="heroForeground" alt="" data-parallax="0.12" data-mouse="4" decoding="async">
+        <img class="cloud cloud--c" data-cloud="0" src="assets/images/cloud-01.png" alt="" data-parallax="-0.15" data-mouse="40" decoding="async">
+        <svg class="plane plane--1" viewBox="0 0 64 64" data-parallax="-0.35" data-mouse="30"><path d="M60 6 4 28l20 7 7 21Z" fill="#fff"/><path d="M60 6 24 35l7 21" fill="#d9eeff"/><path d="m24 35 10 3-3 18" fill="#b9e1ff"/></svg>
+        <svg class="plane plane--2" viewBox="0 0 64 64" data-parallax="-0.2" data-mouse="22"><path d="M60 6 4 28l20 7 7 21Z" fill="#fff"/><path d="M60 6 24 35l7 21" fill="#d9eeff"/></svg>
+      </div>
+
+      <div class="hero__content">
+        <p class="hero__eyebrow" data-reveal style="--d:.1s">
+          <span class="chip chip--glass">
+            <span lang="th" data-bind="schoolNameThai">โรงเรียนเกาะสมุย</span>
+            <span class="chip__dot" aria-hidden="true"></span>
+            <span data-bind="schoolName">Ko Samui School</span>
+          </span>
+          <span class="hero__election" data-bind="hero.eyebrow">Student Council Election 2026</span>
+        </p>
+        <h1 class="hero__title" id="hero-title" data-reveal="words" data-rich="hero.headline">A NEW LESSON <em>BEGINS.</em></h1>
+        <p class="hero__subtitle" data-reveal style="--d:.55s" data-bind="hero.subtitle">A New Chapter. A Better School.</p>
+      </div>
+
+      <a class="scroll-cue" href="#team" data-reveal style="--d:.8s">
+        <svg class="scroll-cue__ring" viewBox="0 0 120 120" aria-hidden="true">
+          <defs><path id="cue-circle" d="M60 60 m-46 0 a46 46 0 1 1 92 0 a46 46 0 1 1 -92 0"/></defs>
+          <text><textPath href="#cue-circle" data-cue-text>MEET OUR TEAM • MEET OUR TEAM • </textPath></text>
+        </svg>
+        <span class="scroll-cue__arrow" data-icon="arrowDown"></span>
+        <span class="scroll-cue__label" data-bind="hero.scrollLabel">Meet Our Team</span>
+      </a>
+
+      <div class="ballot-badge" data-reveal="scale" style="--d:1s" aria-label="Ballot number">
+        <span class="ballot-badge__label">Vote No.</span>
+        <span class="ballot-badge__num" data-bind="ballotNumber">1</span>
+      </div>
+    </section>
+
+    <!-- ============ 2. PARTY INTRODUCTION ============ -->
+    <section class="intro" id="about" aria-labelledby="intro-title">
+      <div class="intro__deco" aria-hidden="true">
+        <span class="deco-circle deco-circle--1" data-parallax="-0.12"></span>
+        <span class="deco-ring deco-ring--1" data-parallax="0.1"></span>
+        <span class="deco-dots" data-parallax="-0.06"></span>
+        <svg class="deco-squiggle" viewBox="0 0 200 60" data-parallax="-0.18"><path d="M4 40c20-30 40-30 60 0s40 30 60 0 40-30 72-6" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+        <svg class="plane plane--intro" viewBox="0 0 64 64" data-parallax="-0.3"><path d="M60 6 4 28l20 7 7 21Z" fill="#69BDF5"/><path d="M60 6 24 35l7 21" fill="#4fa6e3"/></svg>
+      </div>
+
+      <div class="container">
+        <p class="kicker" data-reveal><span class="kicker__line" aria-hidden="true"></span><span data-bind="intro.kicker">Chapter 01 — The Party</span></p>
+        <h2 class="intro__title" id="intro-title" data-reveal="words" data-rich="intro.title">School is where we learn. Student council is where we <em>learn to lead.</em></h2>
+
+        <div class="intro__grid">
+          <p class="intro__statement" data-scrub data-bind="intro.statement">NEW LESSON is a team of students who believe every voice in Ko Samui School deserves to be heard.</p>
+
+          <aside class="party-card" data-reveal="right" aria-label="Party card">
+            <div class="party-card__top">
+              <img class="party-card__logo" src="assets/images/party-logo.png" data-bind-src="logo" alt="NEW LESSON party logo" width="88" height="88" loading="lazy">
+              <div>
+                <p class="party-card__name" data-bind="partyName">NEW LESSON</p>
+                <p class="party-card__thai" lang="th" data-bind="partyNameThai">พรรคนิวเลสซั่น</p>
+              </div>
+            </div>
+            <p class="party-card__slogan" data-bind="slogan">A New Chapter. A Better School.</p>
+            <dl class="party-stats">
+              <div><dt>Candidates</dt><dd data-count="members">6</dd></div>
+              <div><dt>Policies</dt><dd data-count="policies">8</dd></div>
+              <div><dt>Ballot No.</dt><dd data-bind="ballotNumber">1</dd></div>
+            </dl>
+          </aside>
+        </div>
+
+        <div class="pillars">
+          <article class="pillar" data-reveal style="--d:0s">
+            <span class="pillar__num">01</span>
+            <h3 class="pillar__title">Philosophy</h3>
+            <p class="pillar__text" data-bind="intro.philosophy"></p>
+          </article>
+          <article class="pillar pillar--offset" data-reveal style="--d:.12s">
+            <span class="pillar__num">02</span>
+            <h3 class="pillar__title">Vision</h3>
+            <p class="pillar__text" data-bind="intro.vision"></p>
+          </article>
+          <article class="pillar" data-reveal style="--d:.24s">
+            <span class="pillar__num">03</span>
+            <h3 class="pillar__title">Mission</h3>
+            <p class="pillar__text" data-bind="intro.mission"></p>
+          </article>
+        </div>
+      </div>
+
+      <div class="marquee" role="img" aria-label="Campaign slogan">
+        <div class="marquee__track" data-marquee></div>
+      </div>
+    </section>
+
+    <!-- ============ 3. TEAM / MEMBER SHOWCASE ============ -->
+    <section class="team" id="team" aria-labelledby="team-title">
+      <header class="team__head container">
+        <p class="kicker" data-reveal><span class="kicker__line" aria-hidden="true"></span><span data-bind="teamSection.kicker">Chapter 02 — Meet the Team</span></p>
+        <div class="team__head-grid">
+          <h2 class="team__title" id="team-title" data-reveal="words" data-rich="teamSection.title">The people writing <em>the next chapter.</em></h2>
+          <p class="team__lead" data-reveal style="--d:.2s" data-bind="teamSection.lead"></p>
+        </div>
+        <!-- Table of contents, generated from js/data.js -->
+        <ol class="roster" id="roster" aria-label="Party members"></ol>
+      </header>
+
+      <!-- One full-screen section per member, generated from js/data.js -->
+      <div class="members" id="members"></div>
+    </section>
+
+    <!-- ============ 4. POLICIES ============ -->
+    <section class="policies" id="policies" aria-labelledby="policies-title">
+      <div class="policies__deco" aria-hidden="true">
+        <span class="deco-ring deco-ring--2" data-parallax="0.12"></span>
+        <span class="deco-circle deco-circle--2" data-parallax="-0.1"></span>
+      </div>
+      <div class="container">
+        <p class="kicker" data-reveal><span class="kicker__line" aria-hidden="true"></span><span data-bind="policySection.kicker">Chapter 03 — Our Promises</span></p>
+        <div class="policies__head">
+          <h2 class="policies__title" id="policies-title" data-reveal="words" data-rich="policySection.title">Promises we will <em>actually keep.</em></h2>
+          <p class="policies__lead" data-reveal style="--d:.2s" data-bind="policySection.lead"></p>
+        </div>
+        <div class="filters" id="policy-filters" role="group" aria-label="Filter policies by category" data-reveal></div>
+        <div class="policy-grid" id="policy-grid"></div>
+        <p class="policy-empty" id="policy-empty" hidden>No policies in this category yet.</p>
+      </div>
+    </section>
+
+    <!-- ============ 5. CLOSING ============ -->
+    <section class="closing" id="vote" aria-labelledby="closing-title">
+      <div class="closing__scene" aria-hidden="true">
+        <span class="closing__sun" data-parallax="0.2"></span>
+        <img class="cloud cloud--d" data-cloud="0" src="assets/images/cloud-01.png" alt="" data-parallax="0.25" loading="lazy" decoding="async">
+        <img class="cloud cloud--e" data-cloud="1" src="assets/images/cloud-02.png" alt="" data-parallax="-0.15" loading="lazy" decoding="async">
+        <img class="cloud cloud--f" data-cloud="1" src="assets/images/cloud-02.png" alt="" data-parallax="0.1" loading="lazy" decoding="async">
+        <svg class="plane plane--closing" viewBox="0 0 64 64" data-parallax="-0.4"><path d="M60 6 4 28l20 7 7 21Z" fill="#fff"/><path d="M60 6 24 35l7 21" fill="#d9eeff"/></svg>
+      </div>
+      <div class="container closing__inner">
+        <p class="kicker kicker--center" data-reveal><span class="kicker__line" aria-hidden="true"></span><span data-bind="closing.kicker">Chapter 04 — Your Vote</span></p>
+        <h2 class="closing__title" id="closing-title" data-reveal="words" data-rich="closing.headline">THE FUTURE STARTS WITH US.</h2>
+        <p class="closing__text" data-reveal style="--d:.3s" data-bind="closing.text"></p>
+        <div class="closing__cta" data-reveal style="--d:.45s">
+          <a class="btn btn--primary btn--xl" href="#policies" data-bind-href="closing.ctaLink">
+            <span data-bind="closing.ctaLabel">Vote NEW LESSON</span>
+            <span class="btn__badge">No. <span data-bind="ballotNumber">1</span></span>
+          </a>
+          <p class="closing__date" data-bind="electionDate"></p>
+        </div>
+        <div class="closing__brand" data-reveal style="--d:.55s">
+          <img src="assets/images/party-logo.png" data-bind-src="logo" alt="" width="64" height="64" loading="lazy">
+          <div>
+            <p class="closing__party" data-bind="partyName">NEW LESSON</p>
+            <p class="closing__school"><span data-bind="schoolName">Ko Samui School</span> · <span lang="th" data-bind="schoolNameThai">โรงเรียนเกาะสมุย</span></p>
+          </div>
+        </div>
+        <ul class="socials" id="socials" aria-label="Social media" data-reveal style="--d:.65s"></ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating member progress indicator (generated) -->
+  <aside class="member-hud" id="member-hud" aria-label="Member navigation" hidden></aside>
+  <!-- Hover preview for the roster (desktop only) -->
+  <div class="roster-preview" id="roster-preview" aria-hidden="true"><img alt=""></div>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p>© <span data-year>2026</span> <span data-bind="partyName">NEW LESSON</span> · <span data-bind="schoolName">Ko Samui School</span></p>
+      <p class="site-footer__note" data-bind="footerNote"></p>
+      <a class="site-footer__top" href="#top">Back to top <span data-icon="arrowUp"></span></a>
+    </div>
+  </footer>
+
+  <noscript>
+    <div class="noscript">Please enable JavaScript to see our team members and policies.</div>
+  </noscript>
+</body>
+</html>
