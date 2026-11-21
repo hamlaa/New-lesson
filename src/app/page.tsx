@@ -7,6 +7,7 @@ import { MemberHud } from "@/components/MemberHud";
 import { MemberSection } from "@/components/MemberSection";
 import { MotionEngine } from "@/components/MotionEngine";
 import { Closing, Footer, Policies, TeamHead } from "@/components/Sections";
+import { SectionArrows } from "@/components/SectionArrows";
 import { party } from "@/data/party";
 import { homeJsonLd } from "@/lib/jsonld";
 import { baseOpenGraph } from "@/lib/metadata";
@@ -42,6 +43,7 @@ export default function HomePage() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img alt="" />
       </div>
+      <SectionArrows />
       <Footer />
       <MotionEngine />
       <JsonLd data={homeJsonLd()} />

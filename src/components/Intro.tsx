@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Fragment, type CSSProperties } from "react";
 import { party } from "@/data/party";
-import { Plane } from "./Hero";
+import { Plane } from "./Plane";
 import { ScrubText, SplitHeading } from "./Text";
 
 const d = (v: string) => ({ "--d": v }) as CSSProperties;

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import { party } from "@/data/party";
-import { Plane } from "./Hero";
+import { Plane } from "./Plane";
 import { Icon } from "./Icon";
 import { PolicyGrid } from "./PolicyGrid";
 import { Roster } from "./Roster";

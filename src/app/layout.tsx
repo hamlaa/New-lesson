@@ -5,6 +5,7 @@ import { party } from "@/data/party";
 import { baseOpenGraph } from "@/lib/metadata";
 import { GOOGLE_VERIFICATION, NOINDEX, SITE_URL } from "@/lib/site";
 import "@/styles/style.css";
+import "@/styles/hero.css";
 import "@/styles/responsive.css";
 import "@/styles/pages.css";
 

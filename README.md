@@ -79,6 +79,11 @@ npm run start      # รัน production
 - **ลิงก์โซเชียล:** เปลี่ยน `"#"` เป็นลิงก์จริง ระบบจะส่งให้ Google เป็น `sameAs` ด้วย
   ช่วยให้ Google รู้ว่าเพจ IG/Facebook กับเว็บนี้เป็นพรรคเดียวกัน
 - **ข้อความใน Google:** แก้ที่ `seo.title`, `seo.description`, `seo.keywords`
+- **เมนูด้านบน (โลโก้อยู่ตรงกลาง):** แก้ที่ `nav.left` และ `nav.right`
+- **หน้าแรก (Hero):** แก้ที่ `hero` → `headline`, `subheadline`, `ctaLabel` (ปุ่ม EXPLORE), `anchorLabel` (Our Origin)
+- **ปุ่ม Play:** ใส่ลิงก์ YouTube หรือไฟล์ `.mp4` (เช่น `/videos/campaign.mp4` วางไว้ใน `public/videos/`) ที่ `hero.videoUrl`
+  จะเปิดวิดีโอเป็นหน้าต่างเล่น · ถ้าเว้นว่าง ปุ่มจะเลื่อนไปที่ส่วนทีมแทน
+- **ภาพทะเล/ท้องฟ้า/เรือ/ประภาคาร/ฝูงปลา:** วาดด้วยโค้ด (SVG) ใน `src/components/HeroScene.tsx` ไม่ต้องใช้ไฟล์รูป
 
 แก้เสร็จ → `docker compose up -d --build`
 
@@ -87,16 +92,15 @@ npm run start      # รัน production
 | ไฟล์ | ใช้ที่ | ขนาดแนะนำ |
 |---|---|---|
 | `member-01.jpg` … | รูปสมาชิก | 1000 × 1250 px (แนวตั้ง 4:5) |
-| `hero-background.jpg` | ท้องฟ้าหน้าแรก | 2400 × 1500 px |
-| `hero-island.png` | เกาะ/ทะเล (PNG โปร่งใส) | 2400 × 900 px |
-| `cloud-01.png`, `cloud-02.png` | เมฆลอย (PNG โปร่งใส) | 1200 × 480 px |
-| `party-logo.png` | โลโก้พรรค | 512 × 512 px |
+| `hero-background.jpg` | พื้นหลังรูปพรีวิวตอนแชร์ลิงก์ | 2400 × 1500 px |
+| `cloud-01.png`, `cloud-02.png` | เมฆลอยในส่วนท้ายหน้า | 1200 × 480 px |
+| `new-lesson-logo.png` | โลโก้พรรค | 512 × 512 px |
 
-ง่ายสุด: **ตั้งชื่อไฟล์ใหม่ให้เหมือนเดิมแล้ววางทับ** ไม่ต้องแก้โค้ด
+ง่ายสุด: **ตั้งชื่อไฟล์ใหม่ให้เหมือนเดิมแล้ววางทับ** ไม่ต้องแก้โค้ด แล้วรัน `docker compose up -d --build`
 Next.js จะย่อรูปและแปลงเป็น AVIF/WebP ให้อัตโนมัติ (รูป 52 KB → ~7 KB บนมือถือ)
 ถ้ารูปหาย จะแสดงกรอบ "Photo coming soon" พร้อมอักษรย่อชื่อแทน
 
-ไอคอนแท็บเบราว์เซอร์: `src/app/icon.svg` · ไอคอน iPhone: `src/app/apple-icon.png`
+ไอคอนแท็บเบราว์เซอร์: `src/app/icon.png` · ไอคอน iPhone: `src/app/apple-icon.png`
 
 ---
 

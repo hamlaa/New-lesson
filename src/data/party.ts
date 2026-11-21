@@ -75,9 +75,9 @@ export const party = {
   },
 
   /* ---------- Images (files live in /public/images) ---------- */
-  logo: "/images/party-logo.png",
+  logo: "/images/new-lesson-logo.png",
+  /** Background of the link-preview image (Open Graph) */
   heroImage: "/images/hero-background.jpg",
-  heroForeground: "/images/hero-island.png",
   cloudImages: ["/images/cloud-01.png", "/images/cloud-02.png"],
 
   /* ---------- Colours ---------- */
@@ -89,12 +89,31 @@ export const party = {
     accent: "#EAF6FF",     // Soft Blue
   },
 
-  /* ---------- Section 1: Hero ---------- */
+  /* ---------- Navigation (logo sits in the middle) ----------
+     Labels are shown with a blinking "_" after them. */
+  nav: {
+    left: [
+      { label: "Our Mission", href: "#about" },
+      { label: "Contribute", href: "#policies" },
+    ],
+    right: [
+      { label: "Our Team", href: "#team" },
+      { label: "Contact", href: "#vote" },
+    ],
+  },
+
+  /* ---------- Section 1: Hero (sea & sky illustration) ---------- */
   hero: {
-    eyebrow: "Student Council Election 2026",
-    headline: "A NEW LESSON *BEGINS.*",
-    subtitle: "A New Chapter. A Better School.",
-    scrollLabel: "Meet Our Team",
+    headline: "NEW LESSON",
+    subheadline: "Student Council Party · Ko Samui School",
+    ctaLabel: "EXPLORE",
+    ctaLink: "#about",
+    /** YouTube link or .mp4 path (e.g. "/videos/campaign.mp4").
+        Empty → the play button jumps to the team section instead. */
+    videoUrl: "",
+    playLabel: "Meet the team",
+    anchorLabel: "Our Origin",
+    anchorLink: "#about",
   },
 
   /* ---------- Section 2: About the party ---------- */

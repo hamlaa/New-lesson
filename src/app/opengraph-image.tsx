@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 import { party } from "@/data/party";
 import { OG_SIZE, publicDataUri } from "@/lib/og";
-import { plain } from "@/lib/site";
 
 export const alt = `${party.partyName} — Student council party of ${party.schoolName}`;
 export const size = OG_SIZE;
@@ -22,10 +21,9 @@ export default async function OpengraphImage() {
         <div style={{ position: "absolute", left: 64, right: 64, bottom: 56, display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", fontSize: 26, fontWeight: 700, letterSpacing: 4, textTransform: "uppercase", opacity: 0.75 }}>
-              {party.schoolName} · {party.hero.eyebrow}
+              {party.hero.subheadline}
             </div>
-            <div style={{ display: "flex", fontSize: 84, fontWeight: 800, letterSpacing: -3, marginTop: 10 }}>{plain(party.hero.headline)}</div>
-            <div style={{ display: "flex", fontSize: 34, marginTop: 6, opacity: 0.8 }}>{party.slogan}</div>
+            <div style={{ display: "flex", fontSize: 76, fontWeight: 800, letterSpacing: -3, marginTop: 10 }}>{party.slogan}</div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             {logo && <img src={logo} width={120} height={120} style={{ borderRadius: 34 }} />}
