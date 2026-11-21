@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { gsap, prefersReducedMotion, ScrollTrigger, whenLoaded } from "@/lib/motion";
+import { gsap, prefersReducedMotion, ScrollTrigger, whenLoaded, isLite } from "@/lib/motion";
 
 /**
  * Scroll-driven "cinematic" scenes (GSAP ScrollTrigger). Renders nothing.
@@ -297,12 +297,53 @@ export function Cinematics() {
       });
     };
 
+    /* ---------------- lite mode (touch): cheap, one-shot ---------------- */
+    const lite = () => {
+      all(".pledge__line").forEach((line) => {
+        gsap.from(line, { y: 50, opacity: 0, duration: 0.9, ease: "expo.out", scrollTrigger: { trigger: line, start: "top 90%", once: true } });
+      });
+      const cards = all(".policy-card");
+      if (cards.length) {
+        gsap.set(cards, { opacity: 0, y: 36, transition: "none" });
+        ScrollTrigger.batch(cards, {
+          start: "top 94%", once: true,
+          onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, stagger: 0.08, duration: 0.7, ease: "power3.out", overwrite: true, clearProps: "opacity,transform,transition" }),
+        });
+      }
+      // native swipe carousel: keep the counter & progress bar in sync
+      const track = q(".reel__track");
+      const reelEl = q(".reel");
+      if (!track || !reelEl) return;
+      const counter = reelEl.querySelector<HTMLElement>(".reel__current");
+      const bar = reelEl.querySelector<HTMLElement>(".reel__progress i");
+      const items = all(".reel-card", reelEl);
+      let raf = 0;
+      const sync = () => {
+        raf = 0;
+        const max = Math.max(1, track.scrollWidth - track.clientWidth);
+        const p = Math.min(1, track.scrollLeft / max);
+        if (bar) bar.style.transform = `scaleX(${Math.max(0.04, p).toFixed(3)})`;
+        // leftmost card that is at least half visible
+        const base = items[0]?.offsetLeft ?? 0;
+        let n = items.findIndex((c) => c.offsetLeft - base + c.offsetWidth / 2 >= track.scrollLeft);
+        if (p > 0.995) n = items.length - 1;
+        if (n < 0) n = 0;
+        if (counter) counter.textContent = pad(n + 1);
+      };
+      const onScroll = () => { if (!raf) raf = requestAnimationFrame(sync); };
+      sync();
+      track.addEventListener("scroll", onScroll, { passive: true });
+      return () => { track.removeEventListener("scroll", onScroll); cancelAnimationFrame(raf); };
+    };
+
     /* ---------------- build once the loader is gone ---------------- */
     const build = () => {
       root.classList.add("motion");
-      heroIntro();
-      mm.add({ desktop: "(min-width: 900px)", mobile: "(max-width: 899px)" }, (ctx) => {
-        const desktop = Boolean(ctx.conditions?.desktop);
+      if (!isLite()) heroIntro(); // touch: CSS-only hero entrance (mobile.css)
+      // Desktop with mouse/trackpad: the full cinematic experience
+      mm.add("(min-width: 900px) and (hover: hover) and (pointer: fine)", () => {
+        const desktop = true;
+        root.classList.add("motion-full");
         // create in page order so pin spacing is measured correctly
         heroScroll(desktop);
         pillars();
@@ -313,8 +354,10 @@ export function Cinematics() {
         policies();
         closing();
         decos();
-        return () => stopMarquee?.();
+        return () => { stopMarquee?.(); root.classList.remove("motion-full"); };
       });
+      // Phones / touch screens: native scrolling, no pins, light one-shot reveals
+      mm.add("(max-width: 899px), (hover: none), (pointer: coarse)", () => lite());
       scramble();
       const refresh = () => ScrollTrigger.refresh();
       requestAnimationFrame(refresh);

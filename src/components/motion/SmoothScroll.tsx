@@ -2,12 +2,12 @@
 
 import Lenis from "lenis";
 import { useEffect } from "react";
-import { gsap, prefersReducedMotion, ScrollTrigger } from "@/lib/motion";
+import { gsap, isLite, prefersReducedMotion, ScrollTrigger } from "@/lib/motion";
 
 /** Inertia ("buttery") scrolling for mouse wheels & trackpads, synced with GSAP ScrollTrigger. */
 export function SmoothScroll() {
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    if (prefersReducedMotion() || isLite()) return; // touch screens keep native scrolling
     const lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 1, anchors: { duration: 1.6 }, autoRaf: false });
     window.__lenis = lenis;
     if (document.documentElement.classList.contains("is-loading")) lenis.stop();

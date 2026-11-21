@@ -49,6 +49,8 @@ export function Hero() {
       <div className="hero__flash" aria-hidden="true" />
 
       <div className="hero__content">
+        {/* phone-only logo (hidden on desktop) */}
+        <Image className="hero__logo" src={party.logo} alt="" width={240} height={240} sizes="128px" data-reveal="scale" style={d("0s")} />
         <p className="hero__eyebrow" data-reveal style={d(".1s")}>
           <span className="chip chip--glass">
             <span lang="th">{party.schoolNameThai}</span>
@@ -61,6 +63,15 @@ export function Hero() {
         <p className="hero__subtitle" data-reveal style={d(".55s")}>
           {party.hero.subtitle} <span lang="th" className="hero__subtitle-th">{party.sloganThai}</span>
         </p>
+        {/* phone-only buttons (hidden on desktop) */}
+        <div className="hero__actions" data-reveal style={d(".7s")}>
+          <a className="hero__btn hero__btn--primary" href="#team">
+            {party.hero.scrollLabel} <Icon name="arrowDown" />
+          </a>
+          <a className="hero__btn hero__btn--glass" href="#vote">
+            Vote <b>No. {party.ballotNumber}</b>
+          </a>
+        </div>
       </div>
 
       <a className="scroll-cue" href="#team" data-reveal="fade" style={d(".8s")} data-magnetic="0.4">
