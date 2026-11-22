@@ -73,7 +73,20 @@ html.is-loading { overflow: hidden; }
   background: radial-gradient(circle, rgb(255 251 228 / .9) 0%, rgb(255 255 255 / .35) 30%, transparent 62%);
   mix-blend-mode: screen;
 }
-.hero__flash { position: absolute; inset: 0; z-index: 6; background: #fff; opacity: 0; pointer-events: none; }
+.hero__flash { position: absolute; inset: 0; z-index: 6; background: #fff; opacity: 0; pointer-events: none; display: grid; place-items: center; }
+.hero__loader { display: grid; justify-items: center; gap: 1.2rem; opacity: 0; }
+.hero__loader-ring { --s: clamp(116px, 12vw, 172px); position: relative; display: grid; place-items: center; width: var(--s); height: var(--s); }
+.hero__loader-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.hero__loader-track, .hero__loader-arc { fill: none; stroke-width: 7; }
+.hero__loader-track { stroke: rgb(105 189 245 / .18); }
+.hero__loader-arc {
+  stroke: var(--c-primary); stroke-linecap: round;
+  stroke-dasharray: 100; stroke-dashoffset: 100;
+  filter: drop-shadow(0 6px 12px rgb(105 189 245 / .55));
+}
+.hero__loader-pct { position: relative; font-size: calc(var(--s) * .26); font-weight: 800; letter-spacing: -.05em; color: var(--c-text); font-variant-numeric: tabular-nums; }
+.hero__loader-pct::after { content: "%"; font-size: .45em; margin-left: .08em; color: var(--c-primary); }
+.hero__loader-label { font-size: .74rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--c-text-soft); }
 
 /* ---------- Floating decorations ---------- */
 .deco-ring { border-style: dashed; }

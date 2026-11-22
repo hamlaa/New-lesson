@@ -28,6 +28,56 @@ export function Cinematics() {
     const cleanups: (() => void)[] = [];
     const mm = gsap.matchMedia(document.body);
 
+    /* ---------------- smooth, speed-limited scroll follower ----------------
+       Pinned scenes don't jump straight to the scroll position. A follower
+       chases it with eased acceleration and a top speed, so fast scrolling
+       never "snaps" a scene. While a scene lags behind, the mouse wheel
+       (Lenis) is braked a little so you can't fly past it. */
+    const brakes = new Map<string, number>();
+    const applyBrake = () => {
+      const lenis = window.__lenis;
+      if (!lenis) return;
+      let m = 1;
+      brakes.forEach((b) => { m = Math.min(m, b); });
+      lenis.options.wheelMultiplier = m;
+      // Lenis copies the option into its wheel handler — update that one too
+      const vs = (lenis as unknown as { virtualScroll?: { options: { wheelMultiplier: number } } }).virtualScroll;
+      if (vs) vs.options.wheelMultiplier = m;
+    };
+    const follower = (
+      id: string,
+      render: (p: number, v: number) => void,
+      { max, gain = 4, accel = 7 }: { max: number; gain?: number; accel?: number },
+    ) => {
+      let target = 0, p = 0, v = 0, active = false;
+      const unbrake = () => { if (brakes.delete(id)) applyBrake(); };
+      const tick = (_t: number, dtMs: number) => {
+        const dt = Math.min(0.05, dtMs / 1000);
+        const diff = target - p;
+        if (Math.abs(diff) < 0.0004 && Math.abs(v) < 0.003) {
+          if (p !== target || v !== 0) { p = target; v = 0; render(p, 0); }
+          unbrake();
+          return;
+        }
+        const want = gsap.utils.clamp(-max, max, diff * gain);
+        v += (want - v) * Math.min(1, accel * dt);
+        p += v * dt;
+        if ((target - p) * diff < 0) { p = target; v = 0; } // never overshoot
+        render(p, v);
+        if (active) {
+          brakes.set(id, gsap.utils.clamp(0.3, 1, 1 - (Math.abs(diff) - 0.06) * 2.6));
+          applyBrake();
+        } else unbrake();
+      };
+      gsap.ticker.add(tick);
+      return {
+        set(t: number, isActive: boolean) { target = t; active = isActive; if (!isActive) unbrake(); },
+        jump(t: number) { target = p = t; v = 0; render(p, 0); },
+        redraw() { render(p, v); },
+        kill() { gsap.ticker.remove(tick); unbrake(); },
+      };
+    };
+
     /* ---------------- hero: entrance after the loader ---------------- */
     const heroIntro = () => {
       const hero = q(".hero");
@@ -54,9 +104,12 @@ export function Cinematics() {
     const heroScroll = (desktop: boolean) => {
       const hero = q(".hero");
       if (!hero) return;
+      const pctEl = hero.querySelector<HTMLElement>(".hero__loader-pct");
+      const pct = { v: 0 };
       gsap.timeline({
         defaults: { ease: "none", duration: 1 },
-        scrollTrigger: { trigger: hero, start: "top top", end: desktop ? "+=130%" : "+=90%", pin: true, scrub: 0.7, anticipatePin: 1 },
+        // fly-through takes ~55% (desktop) / ~40% (phone) of a screen, the loading ring the rest
+        scrollTrigger: { trigger: hero, start: "top top", end: desktop ? "+=100%" : "+=70%", pin: true, scrub: 0.6, anticipatePin: 1 },
       })
         .to(".hero__wordmark", { scale: desktop ? 3.8 : 2.8, yPercent: -14, opacity: 0, ease: "power2.in" }, 0)
         .to(".hero__sky", { scale: 1.3, yPercent: 5 }, 0)
@@ -66,21 +119,24 @@ export function Cinematics() {
         .to(".hero__island", { scale: 1.45, yPercent: 12, transformOrigin: "70% 100%" }, 0)
         .to(".hero__glare", { scale: 2.2, opacity: 0.9 }, 0)
         .to(".hero__content", { y: "-24vh", opacity: 0, filter: "blur(14px)", ease: "power1.in", duration: 0.75 }, 0)
-        .to(".hero__flash", { opacity: 1, duration: 0.4, ease: "power2.in" }, 0.62);
+        .to(".hero__flash", { opacity: 1, duration: 0.4, ease: "power2.in" }, 0.62)
+        // white page: blue ring fills a full turn, then the page carries on to "The Party"
+        .fromTo(".hero__loader", { opacity: 0, scale: 0.6, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.25, ease: "back.out(1.6)" }, 0.88)
+        .fromTo(".hero__loader-arc", { strokeDashoffset: 100 }, { strokeDashoffset: 0, duration: 0.7 }, 1.02)
+        .fromTo(".hero__loader-ring svg", { rotate: -90 }, { rotate: 270, duration: 0.7, ease: "power1.inOut" }, 1.02) // only the ring spins; the number stays upright
+        .fromTo(pct, { v: 0 }, {
+          v: 100, duration: 0.7,
+          onUpdate: () => { if (pctEl) pctEl.textContent = String(Math.round(pct.v)); },
+        }, 1.02)
+        .to({}, { duration: 0.06 }); // tiny hold at 100%
     };
 
     /* ---------------- pledge: pinned giant type ---------------- */
-    const pledge = () => {
+    const pledge = (desktop: boolean) => {
       const sec = q(".pledge");
       if (!sec) return;
       const lines = all(".pledge__line", sec);
-      const tl = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: sec, start: "top top", pin: true, scrub: 0.8, anticipatePin: 1, invalidateOnRefresh: true,
-          end: () => `+=${window.innerHeight * (lines.length * 0.9 + 0.8)}`,
-        },
-      });
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
       tl.from(sec.querySelector(".pledge__kicker"), { opacity: 0, y: 50, duration: 0.4 }, 0);
       lines.forEach((line, i) => {
         const side = i % 2 ? 1 : -1;
@@ -100,6 +156,17 @@ export function Cinematics() {
         .to(".pledge__orb--2", { xPercent: -60, yPercent: -40, duration: end }, 0)
         .to(".pledge__grid", { yPercent: -25, duration: end }, 0)
         .to(".pledge__star", { rotate: 420, scale: 1.5, duration: end }, 0);
+
+      // about half the old scroll distance; the follower keeps the pace readable
+      const f = follower("pledge", (p) => tl.progress(p), { max: 0.55, gain: 4.5, accel: 7 });
+      const st = ScrollTrigger.create({
+        trigger: sec, start: "top top", pin: true, anticipatePin: 1, invalidateOnRefresh: true,
+        end: () => `+=${window.innerHeight * (lines.length * (desktop ? 0.5 : 0.42) + 0.4)}`,
+        onUpdate: (self) => f.set(self.progress, self.isActive),
+        onRefresh: (self) => f.set(self.progress, self.isActive),
+      });
+      f.jump(st.progress);
+      return () => f.kill();
     };
 
     /* ---------------- reel: pinned horizontal strip ---------------- */
@@ -112,43 +179,64 @@ export function Cinematics() {
       const counter = sec.querySelector<HTMLElement>(".reel__current");
       const bar = sec.querySelector<HTMLElement>(".reel__progress i");
       const dist = () => Math.max(0, track.scrollWidth - document.documentElement.clientWidth);
-      const skew = gsap.quickTo(cards, "skewX", { duration: 0.5, ease: "power3" });
-      const settle = gsap.delayedCall(0.12, () => skew(0)).pause();
-
-      const move = gsap.to(track, {
-        x: () => -dist(), ease: "none",
-        scrollTrigger: {
-          trigger: sec, start: "top top", end: () => `+=${dist()}`, pin: true, scrub: 0.7,
-          anticipatePin: 1, invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            if (bar) bar.style.transform = `scaleX(${self.progress.toFixed(4)})`;
-            if (counter) counter.textContent = pad(Math.min(total, Math.floor(self.progress * total) + 1));
-            skew(gsap.utils.clamp(-9, 9, self.getVelocity() / -260));
-            settle.restart(true);
-          },
-        },
-      });
+      const clamp01 = gsap.utils.clamp(0, 1);
+      const setX = gsap.quickSetter(track, "x", "px") as (v: number) => void;
+      const setSkew = gsap.quickSetter(cards, "skewX", "deg") as (v: number) => void;
 
       const visible = cards.filter((c) => c.getBoundingClientRect().left < window.innerWidth);
       gsap.from(visible, {
         y: 160, rotate: 5, opacity: 0, stagger: 0.12, duration: 1.4, ease: "expo.out",
         scrollTrigger: { trigger: sec, start: "top 80%", once: true },
       });
-      cards.forEach((card) => {
+      // per-card effects are computed from the card's real on-screen position
+      const fx = cards.map((card) => {
         const img = card.querySelector(".reel-card__media > *");
-        if (img) {
-          gsap.fromTo(img, { xPercent: -10 }, {
-            xPercent: 10, ease: "none",
-            scrollTrigger: { trigger: card, containerAnimation: move, start: "left right", end: "right left", scrub: true },
-          });
-        }
-        if (!visible.includes(card)) {
-          gsap.from(card, {
-            yPercent: 22, rotate: 7, opacity: 0.2, ease: "power2.out",
-            scrollTrigger: { trigger: card, containerAnimation: move, start: "left 100%", end: "left 62%", scrub: true },
-          });
-        }
+        return {
+          card, left: 0, w: 0,
+          img: img ? (gsap.quickSetter(img, "xPercent") as (v: number) => void) : null,
+          enter: visible.includes(card) ? null : {
+            y: gsap.quickSetter(card, "yPercent") as (v: number) => void,
+            r: gsap.quickSetter(card, "rotate", "deg") as (v: number) => void,
+            o: gsap.quickSetter(card, "opacity") as (v: number) => void,
+          },
+        };
       });
+      let D = dist();
+      let vw = window.innerWidth;
+      let curX = 0;
+      const measure = () => {
+        D = dist();
+        vw = window.innerWidth;
+        fx.forEach((f) => { f.left = f.card.getBoundingClientRect().left - curX; f.w = f.card.offsetWidth; });
+      };
+
+      const render = (p: number, v: number) => {
+        curX = -D * p;
+        setX(curX);
+        if (bar) bar.style.transform = `scaleX(${p.toFixed(4)})`;
+        if (counter) counter.textContent = pad(Math.min(total, Math.floor(p * total) + 1));
+        setSkew(gsap.utils.clamp(-8, 8, (-v * D) / 170));
+        fx.forEach((f) => {
+          const L = f.left + curX;
+          f.img?.(-10 + 20 * clamp01((vw - L) / (vw + f.w)));
+          if (f.enter) {
+            const e = clamp01((vw - L) / (vw * 0.38));
+            const k = 1 - (1 - e) * (1 - e); // power2.out
+            f.enter.y(22 * (1 - k)); f.enter.r(7 * (1 - k)); f.enter.o(0.2 + 0.8 * k);
+          }
+        });
+      };
+      // eased & speed-limited: no snapping when you arrive (or leave) fast
+      const f = follower("reel", render, { max: 0.42, gain: 3.6, accel: 4.5 });
+      measure();
+      const st = ScrollTrigger.create({
+        trigger: sec, start: "top top", end: () => `+=${dist()}`, pin: true,
+        anticipatePin: 1, invalidateOnRefresh: true,
+        onUpdate: (self) => f.set(self.progress, self.isActive),
+        onRefresh: (self) => { measure(); f.set(self.progress, self.isActive); f.redraw(); },
+      });
+      f.jump(st.progress);
+      return () => f.kill();
     };
 
     /* ---------------- members ---------------- */
@@ -307,13 +395,13 @@ export function Cinematics() {
         heroScroll(desktop);
         pillars();
         const stopMarquee = marquee();
-        pledge();
-        reel();
+        const stopPledge = pledge(desktop);
+        const stopReel = reel();
         members(desktop);
         policies();
         closing();
         decos();
-        return () => stopMarquee?.();
+        return () => { stopMarquee?.(); stopPledge?.(); stopReel?.(); };
       });
       scramble();
       const refresh = () => ScrollTrigger.refresh();

@@ -46,7 +46,19 @@ export function Hero() {
         <Plane className="plane--2" parallax="0" mouse="22" />
         <span className="hero__glare" />
       </div>
-      <div className="hero__flash" aria-hidden="true" />
+      {/* white "page turn" after the fly-through, with a scroll-driven loading ring */}
+      <div className="hero__flash" aria-hidden="true">
+        <div className="hero__loader">
+          <span className="hero__loader-ring">
+            <svg viewBox="0 0 120 120">
+              <circle className="hero__loader-track" cx="60" cy="60" r="52" pathLength={100} />
+              <circle className="hero__loader-arc" cx="60" cy="60" r="52" pathLength={100} />
+            </svg>
+            <span className="hero__loader-pct">0</span>
+          </span>
+          <span className="hero__loader-label">{party.intro.kicker}</span>
+        </div>
+      </div>
 
       <div className="hero__content">
         <p className="hero__eyebrow" data-reveal style={d(".1s")}>
