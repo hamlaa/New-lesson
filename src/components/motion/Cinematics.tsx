@@ -78,6 +78,60 @@ export function Cinematics() {
       };
     };
 
+    /* ---------------- soft landing at a pinned scene's edges ----------------
+       Scrolling fast down (or up) into a pin used to stop dead the moment it
+       grabbed the page. Here the Lenis scroll target is never allowed past the
+       pin's edge while you're still outside it, so the page glides to a stop
+       right at the scene. When you scroll on, the wheel starts gentle and
+       ramps back to full speed ("easing onto the accelerator").
+       Mouse wheel / trackpad only — touch flings are handled by the phone. */
+    const softLanding = (st: ScrollTrigger, id: string) => {
+      if (!window.__lenis) return undefined;
+      const EDGE = 3;          // land this many px inside the pin
+      const LAND_LERP = 0.06;  // glide (Lenis default is 0.085)
+      const ramp = { m: 1 };
+      let parked: number | null = null;   // scroll position we glide to and hold
+      let parkedAt = 0;                   // when we parked (ms)
+      let lastInput = 0;                  // last wheel input absorbed while parked (ms)
+      let armed: number | null = null;    // released at this target: the next input eases back onto the accelerator
+      let rampTween: gsap.core.Tween | null = null;
+      const setRamp = (m: number) => { ramp.m = m; if (m >= 0.999) brakes.delete(id); else brakes.set(id, m); applyBrake(); };
+      const tick = () => {
+        const l = window.__lenis;
+        if (!l || l.isStopped) return;
+        const now = performance.now();
+        const pos = l.animatedScroll;
+        const tgt = l.targetScroll;
+
+        if (parked !== null) {
+          // hold still while the fling's leftover momentum dies out
+          if (Math.abs(tgt - parked) > 0.5) { l.scrollTo(parked, { programmatic: false, lerp: LAND_LERP }); lastInput = now; }
+          const settled = Math.abs(pos - parked) < 2;
+          const quiet = now - lastInput > 180;
+          if ((settled && quiet) || now - parkedAt > 1000) { armed = parked; parked = null; }
+          return;
+        }
+        if (armed !== null && Math.abs(tgt - armed) > 0.5) { // the user scrolls again
+          armed = null;
+          rampTween?.kill();
+          rampTween = gsap.to(ramp, { m: 1, duration: 1.1, ease: "power1.in", onUpdate: () => setRamp(ramp.m) });
+          return;
+        }
+        if (l.isScrolling !== "smooth") return;
+        // only when ENTERING the scene: down into its start, or up into its end
+        let cap: number | null = null;
+        if (pos < st.start - 1 && tgt > st.start + EDGE) cap = st.start + EDGE;
+        else if (pos > st.end + 1 && tgt < st.end - EDGE) cap = st.end - EDGE;
+        if (cap === null) return;
+        l.scrollTo(cap, { programmatic: false, lerp: LAND_LERP });
+        parked = cap; parkedAt = lastInput = now; armed = null;
+        rampTween?.kill();
+        setRamp(0.3); // the next wheel input starts gently
+      };
+      gsap.ticker.add(tick);
+      return () => { gsap.ticker.remove(tick); rampTween?.kill(); brakes.delete(id); applyBrake(); };
+    };
+
     /* ---------------- hero: entrance after the loader ---------------- */
     const heroIntro = () => {
       const hero = q(".hero");
@@ -179,64 +233,46 @@ export function Cinematics() {
       const counter = sec.querySelector<HTMLElement>(".reel__current");
       const bar = sec.querySelector<HTMLElement>(".reel__progress i");
       const dist = () => Math.max(0, track.scrollWidth - document.documentElement.clientWidth);
-      const clamp01 = gsap.utils.clamp(0, 1);
-      const setX = gsap.quickSetter(track, "x", "px") as (v: number) => void;
-      const setSkew = gsap.quickSetter(cards, "skewX", "deg") as (v: number) => void;
+      const skew = gsap.quickTo(cards, "skewX", { duration: 0.5, ease: "power3" });
+      const settle = gsap.delayedCall(0.12, () => skew(0)).pause();
+
+      const move = gsap.to(track, {
+        x: () => -dist(), ease: "none",
+        scrollTrigger: {
+          trigger: sec, start: "top top", end: () => `+=${dist()}`, pin: true, scrub: 0.7,
+          anticipatePin: 1, invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (bar) bar.style.transform = `scaleX(${self.progress.toFixed(4)})`;
+            if (counter) counter.textContent = pad(Math.min(total, Math.floor(self.progress * total) + 1));
+            skew(gsap.utils.clamp(-9, 9, self.getVelocity() / -260));
+            settle.restart(true);
+          },
+        },
+      });
+
+      const stopLanding = softLanding(move.scrollTrigger!, "reel");
 
       const visible = cards.filter((c) => c.getBoundingClientRect().left < window.innerWidth);
       gsap.from(visible, {
         y: 160, rotate: 5, opacity: 0, stagger: 0.12, duration: 1.4, ease: "expo.out",
         scrollTrigger: { trigger: sec, start: "top 80%", once: true },
       });
-      // per-card effects are computed from the card's real on-screen position
-      const fx = cards.map((card) => {
+      cards.forEach((card) => {
         const img = card.querySelector(".reel-card__media > *");
-        return {
-          card, left: 0, w: 0,
-          img: img ? (gsap.quickSetter(img, "xPercent") as (v: number) => void) : null,
-          enter: visible.includes(card) ? null : {
-            y: gsap.quickSetter(card, "yPercent") as (v: number) => void,
-            r: gsap.quickSetter(card, "rotate", "deg") as (v: number) => void,
-            o: gsap.quickSetter(card, "opacity") as (v: number) => void,
-          },
-        };
+        if (img) {
+          gsap.fromTo(img, { xPercent: -10 }, {
+            xPercent: 10, ease: "none",
+            scrollTrigger: { trigger: card, containerAnimation: move, start: "left right", end: "right left", scrub: true },
+          });
+        }
+        if (!visible.includes(card)) {
+          gsap.from(card, {
+            yPercent: 22, rotate: 7, opacity: 0.2, ease: "power2.out",
+            scrollTrigger: { trigger: card, containerAnimation: move, start: "left 100%", end: "left 62%", scrub: true },
+          });
+        }
       });
-      let D = dist();
-      let vw = window.innerWidth;
-      let curX = 0;
-      const measure = () => {
-        D = dist();
-        vw = window.innerWidth;
-        fx.forEach((f) => { f.left = f.card.getBoundingClientRect().left - curX; f.w = f.card.offsetWidth; });
-      };
-
-      const render = (p: number, v: number) => {
-        curX = -D * p;
-        setX(curX);
-        if (bar) bar.style.transform = `scaleX(${p.toFixed(4)})`;
-        if (counter) counter.textContent = pad(Math.min(total, Math.floor(p * total) + 1));
-        setSkew(gsap.utils.clamp(-8, 8, (-v * D) / 170));
-        fx.forEach((f) => {
-          const L = f.left + curX;
-          f.img?.(-10 + 20 * clamp01((vw - L) / (vw + f.w)));
-          if (f.enter) {
-            const e = clamp01((vw - L) / (vw * 0.38));
-            const k = 1 - (1 - e) * (1 - e); // power2.out
-            f.enter.y(22 * (1 - k)); f.enter.r(7 * (1 - k)); f.enter.o(0.2 + 0.8 * k);
-          }
-        });
-      };
-      // eased & speed-limited: no snapping when you arrive (or leave) fast
-      const f = follower("reel", render, { max: 0.42, gain: 3.6, accel: 4.5 });
-      measure();
-      const st = ScrollTrigger.create({
-        trigger: sec, start: "top top", end: () => `+=${dist()}`, pin: true,
-        anticipatePin: 1, invalidateOnRefresh: true,
-        onUpdate: (self) => f.set(self.progress, self.isActive),
-        onRefresh: (self) => { measure(); f.set(self.progress, self.isActive); f.redraw(); },
-      });
-      f.jump(st.progress);
-      return () => f.kill();
+      return stopLanding;
     };
 
     /* ---------------- members ---------------- */
