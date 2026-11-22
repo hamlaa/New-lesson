@@ -1,6 +1,6 @@
 /* =====================================================================
    motion.css — styles for the cinematic layer
-   loader · page curtain · cursor · tilt · hero extras · pledge ·
+   loader · page curtain · tilt · hero extras · pledge ·
    candidate reel · member stacking · countdown · closing extras
    The page works fully without any of this running (no JS / reduced motion).
    ===================================================================== */
@@ -44,22 +44,6 @@ html.is-loading { overflow: hidden; }
 .curtain__layer--navy { display: grid; place-items: center; background: linear-gradient(180deg, #123257, var(--c-text) 60%, #0b1f38); }
 .curtain__logo { width: 120px; height: auto; transform: scale(0); }
 
-/* ---------- Custom cursor (mouse only) ---------- */
-.cursor, .cursor-dot { position: fixed; left: 0; top: 0; z-index: 300; pointer-events: none; opacity: 0; }
-.has-cursor .cursor.is-visible, .has-cursor .cursor-dot.is-visible { opacity: 1; }
-.cursor {
-  display: grid; place-items: center;
-  width: 38px; height: 38px; border-radius: 50%;
-  border: 1.5px solid var(--c-text);
-  box-shadow: 0 0 0 1.5px rgb(255 255 255 / .55);
-  transition: width .4s var(--ease-out), height .4s var(--ease-out), background-color .3s, border-color .3s, opacity .3s, scale .25s var(--ease-out);
-}
-.cursor.is-hover { width: 66px; height: 66px; background: rgb(105 189 245 / .16); border-color: var(--c-primary); }
-.cursor.has-label { width: 96px; height: 96px; background: var(--c-text); border-color: var(--c-text); }
-.cursor.is-down { scale: .82; }
-.cursor__label { color: #fff; font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: 0; transition: opacity .2s; }
-.cursor.has-label .cursor__label { opacity: 1; }
-.cursor-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-text); box-shadow: 0 0 0 1.5px rgb(255 255 255 / .7); }
 
 /* ---------- 3D tilt cards ---------- */
 [data-tilt] {
@@ -205,7 +189,7 @@ html.is-loading { overflow: hidden; }
   padding: 1rem 0 3rem;
   background: linear-gradient(180deg, #fff 0%, var(--c-accent) 35%, var(--c-secondary) 100%);
 }
-.motion-full .reel {
+.motion .reel {
   height: 100vh; height: 100svh;
   display: flex; flex-direction: column; justify-content: center; gap: clamp(.5rem, 2.5vh, 1.75rem);
   padding: calc(var(--header-h) + .25rem) 0 1rem;
@@ -222,7 +206,7 @@ html.is-loading { overflow: hidden; }
   overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
 }
 .reel__track::-webkit-scrollbar { display: none; }
-.motion-full .reel__track { width: max-content; overflow: visible; scroll-snap-type: none; }
+.motion .reel__track { width: max-content; overflow: visible; scroll-snap-type: none; }
 .reel__item { flex: 0 0 auto; scroll-snap-align: center; }
 .reel-card {
   --w: clamp(230px, min(26vw, calc((100svh - var(--header-h) - 250px) * .75)), 400px);
@@ -310,7 +294,7 @@ html.is-loading { overflow: hidden; }
 
 /* ---------- Reduced motion: everything calm and static ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .loader, .curtain, .cursor, .cursor-dot { display: none !important; }
+  .loader, .curtain { display: none !important; }
   [data-tilt] { transform: none !important; }
   .deco-blob, .countdown__digit { animation: none !important; }
 }

@@ -9,7 +9,6 @@ import "@/styles/style.css";
 import "@/styles/responsive.css";
 import "@/styles/pages.css";
 import "@/styles/motion.css";
-import "@/styles/mobile.css";
 import { Loader } from "@/components/motion/Loader";
 import { PageTransition } from "@/components/motion/PageTransition";
 import { Pointer } from "@/components/motion/Pointer";
@@ -82,7 +81,7 @@ const themeVars = {
 
 /* Enables animations only when JS runs. Holds the page behind the intro loader
    (unless reduced motion is on). Failsafes: show everything if JS never starts. */
-const bootScript = `(function(){var r=document.documentElement;r.classList.add('js');if(matchMedia('(max-width: 899px), (hover: none), (pointer: coarse)').matches)r.classList.add('touch-lite');else if(!matchMedia('(prefers-reduced-motion: reduce)').matches)r.classList.add('is-loading');setTimeout(function(){if(!r.classList.contains('ready')){r.classList.add('reveal-all');r.classList.remove('is-loading')}},3000);setTimeout(function(){r.classList.remove('is-loading')},7000)})();`;
+const bootScript = `(function(){var r=document.documentElement;r.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)r.classList.add('is-loading');setTimeout(function(){if(!r.classList.contains('ready')){r.classList.add('reveal-all');r.classList.remove('is-loading')}},3000);setTimeout(function(){r.classList.remove('is-loading')},7000)})();`;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

@@ -20,10 +20,6 @@ export const LOADED_EVENT = "nl:loaded";
 export const prefersReducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/** Phones, tablets and other touch-first screens get the light, native-scroll experience. */
-export const LITE_QUERY = "(max-width: 899px), (hover: none), (pointer: coarse)";
-export const isLite = () => typeof window !== "undefined" && window.matchMedia(LITE_QUERY).matches;
-
 export const finePointer = () =>
   typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 

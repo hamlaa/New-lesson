@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { party } from "@/data/party";
-import { gsap, isLite, LOADED_EVENT, prefersReducedMotion } from "@/lib/motion";
+import { gsap, LOADED_EVENT, prefersReducedMotion } from "@/lib/motion";
 
 /**
  * Intro curtain: logo, party name, 000→100 counter, then a two-layer wipe.
@@ -29,8 +29,7 @@ export function Loader() {
       window.setTimeout(() => window.dispatchEvent(new Event(LOADED_EVENT)), 0);
     };
 
-    // phones / touch screens skip the intro curtain entirely (content first)
-    if (prefersReducedMotion() || isLite() || root.classList.contains("is-loaded")) {
+    if (prefersReducedMotion() || root.classList.contains("is-loaded")) {
       el.style.display = "none";
       finish();
       return;

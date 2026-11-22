@@ -94,9 +94,7 @@ export function MotionEngine() {
 
     /* ---------- Parallax ---------- */
     type Item = { el: HTMLElement; sy: number; sx: number; mouse: number; center: number; h: number };
-    // Touch screens: no per-frame parallax (keeps native scrolling smooth)
-    const lite = window.matchMedia("(max-width: 899px), (hover: none), (pointer: coarse)").matches;
-    const items: Item[] = reduce || lite
+    const items: Item[] = reduce
       ? []
       : $$<HTMLElement>("[data-parallax], [data-parallax-x]").map((el) => ({
           el,
