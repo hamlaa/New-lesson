@@ -88,7 +88,7 @@ export function Cinematics() {
     const softLanding = (st: ScrollTrigger, id: string) => {
       if (!window.__lenis) return undefined;
       const EDGE = 3;          // land this many px inside the pin
-      const LAND_LERP = 0.06;  // glide (Lenis default is 0.085)
+      const LAND_LERP = 0.14;  // quick glide to a stop (Lenis default is 0.085)
       const ramp = { m: 1 };
       let parked: number | null = null;   // scroll position we glide to and hold
       let parkedAt = 0;                   // when we parked (ms)
@@ -107,14 +107,14 @@ export function Cinematics() {
           // hold still while the fling's leftover momentum dies out
           if (Math.abs(tgt - parked) > 0.5) { l.scrollTo(parked, { programmatic: false, lerp: LAND_LERP }); lastInput = now; }
           const settled = Math.abs(pos - parked) < 2;
-          const quiet = now - lastInput > 180;
-          if ((settled && quiet) || now - parkedAt > 1000) { armed = parked; parked = null; }
+          const quiet = now - lastInput > 90;
+          if ((settled && quiet) || now - parkedAt > 420) { armed = parked; parked = null; }
           return;
         }
         if (armed !== null && Math.abs(tgt - armed) > 0.5) { // the user scrolls again
           armed = null;
           rampTween?.kill();
-          rampTween = gsap.to(ramp, { m: 1, duration: 1.1, ease: "power1.in", onUpdate: () => setRamp(ramp.m) });
+          rampTween = gsap.to(ramp, { m: 1, duration: 0.35, ease: "power1.out", onUpdate: () => setRamp(ramp.m) });
           return;
         }
         if (l.isScrolling !== "smooth") return;
@@ -126,7 +126,7 @@ export function Cinematics() {
         l.scrollTo(cap, { programmatic: false, lerp: LAND_LERP });
         parked = cap; parkedAt = lastInput = now; armed = null;
         rampTween?.kill();
-        setRamp(0.3); // the next wheel input starts gently
+        setRamp(0.7); // the next wheel input starts a touch softer
       };
       gsap.ticker.add(tick);
       return () => { gsap.ticker.remove(tick); rampTween?.kill(); brakes.delete(id); applyBrake(); };
