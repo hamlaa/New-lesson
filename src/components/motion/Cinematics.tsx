@@ -118,6 +118,7 @@ export function Cinematics() {
           return;
         }
         if (l.isScrolling !== "smooth") return;
+        if (Math.abs(tgt - pos) < 220) return; // slow, gentle scrolling just flows through
         // only when ENTERING the scene: down into its start, or up into its end
         let cap: number | null = null;
         if (pos < st.start - 1 && tgt > st.start + EDGE) cap = st.start + EDGE;
@@ -214,7 +215,7 @@ export function Cinematics() {
       // about half the old scroll distance; the follower keeps the pace readable
       const f = follower("pledge", (p) => tl.progress(p), { max: 0.55, gain: 4.5, accel: 7 });
       const st = ScrollTrigger.create({
-        trigger: sec, start: "top top", pin: true, anticipatePin: 1, invalidateOnRefresh: true,
+        trigger: sec, start: "top top", pin: true, invalidateOnRefresh: true,
         end: () => `+=${window.innerHeight * (lines.length * (desktop ? 0.5 : 0.42) + 0.4)}`,
         onUpdate: (self) => f.set(self.progress, self.isActive),
         onRefresh: (self) => f.set(self.progress, self.isActive),
@@ -241,7 +242,7 @@ export function Cinematics() {
         x: () => -dist(), ease: "none",
         scrollTrigger: {
           trigger: sec, start: "top top", end: () => `+=${dist()}`, pin: true, scrub: 0.7,
-          anticipatePin: 1, invalidateOnRefresh: true,
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
             if (bar) bar.style.transform = `scaleX(${self.progress.toFixed(4)})`;
             if (counter) counter.textContent = pad(Math.min(total, Math.floor(self.progress * total) + 1));
