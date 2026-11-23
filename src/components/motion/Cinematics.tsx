@@ -220,7 +220,8 @@ export function Cinematics() {
         onRefresh: (self) => f.set(self.progress, self.isActive),
       });
       f.jump(st.progress);
-      return () => f.kill();
+      const stopLanding = softLanding(st, "pledge-land"); // glide to a stop on entry, like the team reel
+      return () => { f.kill(); stopLanding?.(); };
     };
 
     /* ---------------- reel: pinned horizontal strip ---------------- */
